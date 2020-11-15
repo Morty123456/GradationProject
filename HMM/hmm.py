@@ -35,10 +35,11 @@ print(len(logDel), len(logRet_5), len(logVol_5))
 A = np.column_stack([logDel, logRet_5, logVol_5])
 # print(A)
 
-# 使用高斯分布的hmm模型
+# 使用高斯分布的hmm模型，full指的是使用完全协方差矩阵，里面的元素都不为零
 model = hmm.GaussianHMM(n_components=n, covariance_type="full", n_iter=2000).fit(A)
 hidden_states = model.predict(A)
 
+# 从结果看出，红色代表在上涨，绿色表示在下跌
 plt.figure(figsize=(25, 18))
 for i in range(model.n_components):
     pos = (hidden_states == i)
@@ -48,7 +49,6 @@ for i in range(model.n_components):
 
 res = pd.DataFrame({'Date': Date, 'logReg_1': logRet_1, 'state': hidden_states}).set_index('Date')
 series = res.logReg_1
-
 templist = []
 plt.figure(figsize=(25, 18))
 for i in range(n):
@@ -67,7 +67,8 @@ short = (hidden_states == templist[0]) + (hidden_states == templist[1])  # 卖�
 long = np.append(0, long[:-1])
 short = np.append(0, short[:-1])
 
+# 收益曲线图
 plt.figure(figsize=(25, 18))
 res['ret'] = series.multiply(long) - series.multiply(short)
 plt.plot_date(Date, np.exp(res['ret'].cumsum()), 'r-')
-# plt.show()
+plt.show()
