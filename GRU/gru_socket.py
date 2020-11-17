@@ -6,21 +6,26 @@ import os
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import mean_squared_error, mean_absolute_error
+import math
 
 CSV_PATH = './1.csv'
 maotai = pd.read_csv(CSV_PATH)
-
-training_set = maotai.iloc[0:2611-300, 2:3].values
-test_set = maotai.iloc[2611-300, 2:3].values
-
+# 划分测试集和验证集
+training_set = maotai.iloc[0:2426-300, 2:3].values
+test_set = maotai.iloc[2426-300:, 2:3].values
+# 归一化到 0-1 之间
 sc = MinMaxScaler(feature_range=(0, 1))
 training_set_scaled = sc.fit_transform(training_set)
+# print(training_set_scaled)
+# print(test_set)
 test_set = sc.transform(test_set)
-
+# print(test_set)
 x_train = []
 y_train = []
 x_test = []
 y_test = []
+
+print(len(x_train), len(y_train))
 
 for i in range(60, len(training_set_scaled)):
     x_train.append(training_set_scaled[i-60:i, 0])
@@ -31,11 +36,11 @@ np.random.seed(7)
 np.random.shuffle(y_train)
 tf.random.set_seed(7)
 
-x_train, y_train = np.random(x_train), np.random(y_ytrain)
+x_train, y_train = np.array(x_train), np.array(y_train)
 x_train = np.reshape(x_train, (x_train.shape[0], 60, 1))
 
 for i in range(60, len(test_set)):
-    x_test.append(ttest_set[i-60:i, 0])
+    x_test.append(test_set[i-60:i, 0])
     y_test.append(test_set[i, 0])
 x_test, y_test = np.array(x_test), np.array(y_test)
 x_test = np.reshape(x_test, (x_test.shape[0], 60, 1))
@@ -59,7 +64,7 @@ cp_callback = tf.keras.callbacks.ModelCheckpoint(filepath=checkpoint_save_path,
                                                  save_best_only=True,
                                                  monitor='val_loss')
 
-history = model.fit(x_train, y_train, batch_size=64, epochs=50, validation_data=(x_test, y_test), validation_freq=1,
+history = model.fit(x_train, y_train, batch_size=64, epochs=10, validation_data=(x_test, y_test), validation_freq=1,
                     callbacks=[cp_callback])
 
 model.summary()
