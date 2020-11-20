@@ -1,5 +1,5 @@
 import numpy as np
-from scipy.fftpack import fft,ifft
+from scipy.fftpack import fft, ifft
 import matplotlib.pyplot as plt
 from matplotlib.pylab import mpl
 
@@ -16,6 +16,8 @@ y = 7*np.sin(2*np.pi*200*x) + 5*np.sin(2*np.pi*400*x) + 3*np.cos(2*np.pi*600*x)
 # fft的 振幅谱 和 相位谱,是 通过对傅里叶变换得到的复数结果，进行进一步计算得到的
 # 复数的模(绝对值) 就是对应的 "振幅谱",复数所对应的角度 就是所对应的 "相位谱"
 fft_y = fft(y)
+print(len(fft_y))
+print(fft_y)
 
 # 采样频率(每分钟采样数)
 N = 1400
