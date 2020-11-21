@@ -33,7 +33,7 @@ Date = pd.to_datetime(data.index[5:])
 print(len(logDel), len(logRet_5), len(logVol_5))
 # 特征状态指标：每日最高最低价格的对数差值；每五日收益的对数差；每五日成交量的对数差
 A = np.column_stack([logDel, logRet_5, logVol_5])
-# print(A)
+print(A)
 
 # 使用高斯分布的hmm模型，full指的是使用完全协方差矩阵，里面的元素都不为零
 model = hmm.GaussianHMM(n_components=n, covariance_type="full", n_iter=2000).fit(A)
@@ -59,7 +59,7 @@ for i in range(n):
     templist.append(data_i[-1])
     plt.plot_date(Date, data_i, '-', label='hidden state %d' % i)
     plt.legend()
-plt.show()
+# plt.show()
 
 templist = np.array(templist).argsort()
 long = (hidden_states == templist[-1]) + (hidden_states == templist[-2])  # 买入
@@ -71,4 +71,4 @@ short = np.append(0, short[:-1])
 plt.figure(figsize=(25, 18))
 res['ret'] = series.multiply(long) - series.multiply(short)
 plt.plot_date(Date, np.exp(res['ret'].cumsum()), 'r-')
-plt.show()
+# plt.show()
