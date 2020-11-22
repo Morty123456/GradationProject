@@ -41,11 +41,5 @@ for i in range(100, 150):
     y_setosa[i-100] = y[i]
 # print(y_setosa)
 A = np.column_stack([x1, x2, x3, x4])
-# print(A)
-model = GaussianHMM(n_components=3, covariance_type="full", n_iter=2000).fit(A)
-hidden_states = model.predict(A)
-plt.figure(figsize=(25, 18))
-for i in range(model.n_components):
-    pos = (hidden_states == i)
-    plt.legend()
-plt.show()
+print(A)
+model = GaussianHMM(n_components=3, covariance_type="full", n_iter=20)
