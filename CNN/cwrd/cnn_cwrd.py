@@ -15,8 +15,8 @@ BatchNorm = True  # 是否批量归一化
 number = 1000  # 每类样本的数量
 normal = True  # 是否标准化
 rate = [0.7, 0.2, 0.1]  # 测试集验证集划分比例
-
-path = r'F:\Z_HGD\data\CWRD'
+# 数据的路径
+path = r'data\0HP'
 x_train, y_train, x_valid, y_valid, x_test, y_test = preprocess.prepro(d_path=path, length=length,
                                                                        number=number,
                                                                        normal=normal,
