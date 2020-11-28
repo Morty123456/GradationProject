@@ -112,16 +112,16 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
             for h in range(number - samp_train):
                 # 测试集的起始地址是随机取样，范围是 测试集大小 —— 数据末尾-取样长度
                 random_start = np.random.randint(low=end_index, high=(all_lenght - length))
+                # 测试集和验证集样本，从随机取样的起始地址开始，向后取 length 大小，也就是两个周期大小
                 sample = slice_data[random_start:random_start + length]
+                # 样本添加到测试集中
                 Test_Sample.append(sample)
             Train_Samples[i] = Train_sample
             Test_Samples[i] = Test_Sample
         print("故障类型")
         print(len(Train_Samples))
         print(len(Test_Samples))
-        # for i in keys:
-        #     print(len(Train_Samples[i]))
-        #     print(len(Test_Samples[i]))
+        # 返回得到的测试集和验证集样本
         return Train_Samples, Test_Samples
 
     # 仅抽样完成，打标签
@@ -168,7 +168,7 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
             return X_valid, Y_valid, X_test, Y_test
 
     # 从所有.mat文件中读取出数据的字典
-    # HG：取出每种故障类型的数据， K-V形式的数据
+    # HG：取出每种故障类型的数据， K-V形式的数据，K是每个文件的名字，V是文件内的数据(数组形式的)
     data = capture(original_path=d_path)
     # 将数据切分为训练集、测试集
     train, test = slice_enc(data)
@@ -192,6 +192,12 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
 
 if __name__ == "__main__":
     path = r'data\0HP'
+    # length：是采样的长度
+    # number：是采样的个数（训练集+验证集+测试集）
+    # normal：是否标准化
+    # rate：各个数据集所占的比例
+    # enc：是否进行数据增强
+    # enc_step：数据增强顺延间隔
     train_X, train_Y, valid_X, valid_Y, test_X, test_Y = prepro(d_path=path,
                                                                 length=864,
                                                                 number=1000,
