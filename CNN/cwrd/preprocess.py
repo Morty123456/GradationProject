@@ -83,6 +83,7 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
             Test_Sample = []
             # 训练集是否需要数据增强
             if enc:
+                # 这是以 enc_step 为步长进行数据增强，每次可以取样的数量
                 enc_time = length // enc_step
                 samp_step = 0  # 用来计数Train采样次数
                 for j in range(samp_train):
