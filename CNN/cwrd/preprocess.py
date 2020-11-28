@@ -52,11 +52,11 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
                 # 找到 DE 驱动端 加速度信息，添加到 files 中
                 if 'DE' in key:
                     files[i] = file[key].ravel()
-        print("故障的类型个数：")
-        print(len(files))
-        print("每类故障的数据个数：")
-        for f in files:
-            print(len(files[f]))
+        # print("故障的类型个数：")
+        # print(len(files))
+        # print("每类故障的数据个数：")
+        # for f in files:
+        #     print(len(files[f]))
         # 这里得到的是 每类故障的振动信息
         return files
 
@@ -81,18 +81,27 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
             samp_train = int(number * (1 - slice_rate))  # 500
             Train_sample = []
             Test_Sample = []
-            # 是否需要数据增强
+            # 训练集是否需要数据增强
             if enc:
                 enc_time = length // enc_step
                 samp_step = 0  # 用来计数Train采样次数
                 for j in range(samp_train):
+                    # 训练集的取数据的随机开始地址的范围是 0 —— 训练集大小-2*取样长度
+                    # 这里减两个取样长度，是因为要采用数据增强
+                    # 数据增强的一个循环内，最后一次的取样末尾 - 第一次取样的开始 = 2*取样长度
                     random_start = np.random.randint(low=0, high=(end_index - 2 * length))
                     label = 0
+                    # 通过在这里循环，来保证有很多数据 在 取样长度内有重叠
+                    # 在生成一个随机起始地址后，要以此地址循环enc_time次，每次起始地址都是上一次的加 enc_step
+                    # 这样就可以保证这 enc_time 次取样，都有互相重叠的部分
                     for h in range(enc_time):
                         samp_step += 1
+                        # 训练集取样本的真正 随机开始地址
                         random_start += enc_step
+                        # 从此地址向后取 取样长度大小的数据
                         sample = slice_data[random_start: random_start + length]
                         Train_sample.append(sample)
+                        # 如果样本数达到要求，就退出
                         if samp_step == samp_train:
                             label = 1
                             break
@@ -101,9 +110,9 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
             else:
                 for j in range(samp_train):
                     # length是取样长度，是两个周期的大小 864
-                    # 训练集样本数据的起始地址是 随机取样的，范围是 0 —— 测试集大小-取样长度
+                    # 训练集样本数据的起始地址是 随机取样的，范围是 0 —— 训练集大小-取样长度
                     random_start = np.random.randint(low=0, high=(end_index - length))
-                    # 从随机取样的起始地址开始，向后取 length，作为一个测试集样本
+                    # 从随机取样的起始地址开始，向后取 length，作为一个训练集样本
                     sample = slice_data[random_start:random_start + length]
                     # 把这样本，填到此类别的数据组中
                     Train_sample.append(sample)
@@ -118,9 +127,9 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
                 Test_Sample.append(sample)
             Train_Samples[i] = Train_sample
             Test_Samples[i] = Test_Sample
-        print("故障类型")
-        print(len(Train_Samples))
-        print(len(Test_Samples))
+        # print("故障类型")
+        # print(len(Train_Samples))
+        # print(len(Test_Samples))
         # 返回得到的测试集和验证集样本
         return Train_Samples, Test_Samples
 
@@ -135,19 +144,23 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
             lenx = len(x)
             Y += [label] * lenx
             label += 1
-        print("打标签之后的数据")
-        print(len(X))
-        print(len(Y))
+        # print("打标签之后的数据")
+        # print(len(X))
+        # print(len(Y))
         return X, Y
 
     # one-hot编码
     def one_hot(Train_Y, Test_Y):
+        # 输入进来的 Train_Y[i] 还是单独的一个数字
+        # np.array 就是为了把数字变为一维数组
         Train_Y = np.array(Train_Y).reshape([-1, 1])
         Test_Y = np.array(Test_Y).reshape([-1, 1])
         Encoder = preprocessing.OneHotEncoder()
+        # Encoder 把一维数组扩展为十维数组，第n位为1代表这是第n类数据(但这个时候还是小数)
         Encoder.fit(Train_Y)
         Train_Y = Encoder.transform(Train_Y).toarray()
         Test_Y = Encoder.transform(Test_Y).toarray()
+        # dtype 是把小数变为正数. 这时得到的结果就是整数了
         Train_Y = np.asarray(Train_Y, dtype=np.int32)
         Test_Y = np.asarray(Test_Y, dtype=np.int32)
         return Train_Y, Test_Y
@@ -171,8 +184,16 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
     # HG：取出每种故障类型的数据， K-V形式的数据，K是每个文件的名字，V是文件内的数据(数组形式的)
     data = capture(original_path=d_path)
     # 将数据切分为训练集、测试集
+    # 构造训练集、测试集和验证集
+    # 训练集:包括十中状态,每种状态有500组数据,每组数据的长度是864（自己的理解是，维度是864维的）
     train, test = slice_enc(data)
-    # 为训练集制作标签，返回X，Y
+    # print("测量数据的长度")
+    # print(len(train))
+    # for i in filenames:
+    #     print(len(train[i]))
+    #     print(len(train[i][0]))
+    # 为训练集制作标签,返回X Y
+    # HG:为训练集和测试集制作标签,编号为 0-9
     Train_X, Train_Y = add_labels(train)
     # 为测试集制作标签，返回X，Y
     Test_X, Test_Y = add_labels(test)
@@ -187,6 +208,8 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
         Test_X = np.asarray(Test_X)
     # 将测试集切分为验证集合和测试集.
     Valid_X, Valid_Y, Test_X, Test_Y = valid_test_slice(Test_X, Test_Y)
+    # 训练集 测试集 验证集 的数目分别为 10*500*864 10*250*864 10*250*864
+    # 轴承有十种状态，每种状态有500组数据，每组数据有864个维度（维度是取得观测周期的两倍）
     return Train_X, Train_Y, Valid_X, Valid_Y, Test_X, Test_Y
 
 

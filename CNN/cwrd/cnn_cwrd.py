@@ -17,11 +17,18 @@ normal = True  # 是否标准化
 rate = [0.7, 0.2, 0.1]  # 测试集验证集划分比例
 # 数据的路径
 path = r'data\0HP'
+# 采样周期是 2048
+# 每类样本数量 1000
+# 开启标准化
+# 训练 验证 测试 的比例为：7:2:1
+# 进行数据增强
+# 数据增强的顺延间隔为 28
 x_train, y_train, x_valid, y_valid, x_test, y_test = preprocess.prepro(d_path=path, length=length,
                                                                        number=number,
                                                                        normal=normal,
                                                                        rate=rate,
                                                                        enc=True, enc_step=28)
+print(len(x_train))
 
 x_train, x_valid, x_test = x_train[:, :, np.newaxis], x_valid[:, :, np.newaxis], x_test[:, :, np.newaxis]
 # 输入数据的维度
