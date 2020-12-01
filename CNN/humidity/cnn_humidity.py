@@ -17,6 +17,7 @@ df = pd.read_csv(CSV_PATH)
 # 分割数据和标签。X为输入，是246维的数据。 Y是输出，是1维的数据
 X = np.expand_dims(df.values[:, 0:246].astype(float), axis=2)
 Y = df.values[:, 246]
+# print(X)
 
 # 这部分没咋看懂，以后再说
 encoder = LabelEncoder()
@@ -28,13 +29,14 @@ Y_onehot = np_utils.to_categorical(Y_encoded)
 
 # 划分训练集，测试集
 X_train, X_test, Y_train, Y_test = train_test_split(X, Y_onehot, test_size=0.3, random_state=0)
-print(len(X_train))
+# print(X_train)
+# print(X_train.shape[1:])
 def baseline_model():
     model = Sequential()
     # 使用六层Conv1D来提取特征，每两层后添加一层MaxPooling1D来保留主要特征
     # 16个卷积核, 宽度为3, 输入维度为246
     # 卷积之后变为 244*16
-    model.add(Conv1D(16, 3, input_shape=(246, 1)))
+    model.add(Conv1D(filters=16, kernel_size=3, strides=1, padding='valid', input_shape=(246, 1)))
     # 卷积之后变为 242*16
     model.add(Conv1D(16, 3, activation='tanh'))
     # 最大池化,维度变为之前的1/3 80*16
