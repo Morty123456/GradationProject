@@ -8,11 +8,13 @@ import numpy as np
 
 x_train, y_train, x_valid, y_valid, x_test, y_test = preprocess.prepro(
     d_path=r'../data\0HP', length=2048, number=1000, normal=True, rate=[0.7, 0.2, 0.1], enc=True, enc_step=28)
+
 # np.newaxis 增加一个维度，把二维转化为三维
 x_train, x_valid, x_test = x_train[:, :, np.newaxis], x_valid[:, :, np.newaxis], x_test[:, :, np.newaxis]
+
 # 输入的是2维的
 input_shape = x_train.shape[1:]
-print(input_shape)
+
 def baseline_model():
     model = Sequential()
     # model.add(Conv1D(32, 8, input_shape=(2048, 1)))
