@@ -9,7 +9,7 @@ import time
 
 # 训练参数
 batch_size = 128
-epochs = 12
+epochs = 3
 num_classes = 10
 length = 2048
 BatchNorm = True  # 是否批量归一化
@@ -67,4 +67,4 @@ model.fit(x=x_train, y=y_train, batch_size=batch_size, epochs=epochs,
 score = model.evaluate(x=x_test, y=y_test, verbose=0)
 print("测试集上的损失率：", score[0])
 print("测试集上的准确率：", score[1])
-plot_model(model=model, to_file='images/lstm-diagnosis.png', show_shapes=True)
+plot_model(model=model, to_file='lstm-diagnosis.png', show_shapes=True)

@@ -1,4 +1,4 @@
-from keras.layers import Dense, Activation, Flatten, LSTM, Conv1D
+from keras.layers import Dense, Activation, Flatten, LSTM, Conv1D, MaxPooling1D
 from keras.models import Sequential
 from keras.utils import plot_model
 from keras.regularizers import l2
@@ -22,7 +22,9 @@ input_shape = x_train.shape[1:]
 
 def lstm_classification():
     model = Sequential()
+    # 在lstm之前加上一层卷积来提取特征，注意要最大池化，才可以提升准确率
     model.add(Conv1D(filters=32, kernel_size=20, strides=8, padding='same', kernel_regularizer=l2(1e-4), input_shape=input_shape))
+    model.add(MaxPooling1D(4))
     # units 门结构使用的隐藏单元个数
     model.add(LSTM(units=32, activation='tanh', recurrent_activation='hard_sigmoid', kernel_initializer='glorot_uniform',
                    recurrent_initializer='orthogonal', bias_initializer='zeros', return_sequences=True))
