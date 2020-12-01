@@ -77,7 +77,7 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
             # 切分训练集 和 测试集/验证集
             # 训练集数据的范围（也就是训练集数据的下标都要在end_index之前）
             end_index = int(all_lenght * (1 - slice_rate))
-            # 测试集/验证集的样本数量
+            # 训练集的样本数量
             samp_train = int(number * (1 - slice_rate))  # 500
             Train_sample = []
             Test_Sample = []
@@ -201,6 +201,7 @@ def prepro(d_path, length=864, number=1000, normal=True, rate=[0.5, 0.25, 0.25],
     # 为训练集Y/测试集One-hot标签
     Train_Y, Test_Y = one_hot(Train_Y, Test_Y)
     # 训练数据/测试数据 是否标准化.
+    # 计算训练集的平均值和标准差，以便测试集使用相同的变换，通过删除平均值和缩放到单位方差来标准化特征。
     if normal:
         Train_X, Test_X = scalar_stand(Train_X, Test_X)
     else:
