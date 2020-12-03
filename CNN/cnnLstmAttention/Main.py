@@ -112,8 +112,9 @@ def attention_model():
     lstm_out = Bidirectional(LSTM(lstm_units, return_sequences=True))(x)
     lstm_out = Dropout(0.3)(lstm_out)
     attention_mul = attention_3d_block2(lstm_out)
+    # 全部展开
     attention_mul = Flatten()(attention_mul)
-
+    # 全连接层的网络，输出为一个数字
     output = Dense(1, activation='sigmoid')(attention_mul)
     model = Model(inputs=[inputs], outputs=output)
     return model
