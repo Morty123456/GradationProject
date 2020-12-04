@@ -1,4 +1,4 @@
-from keras.layers import Dense, Dropout, Flatten, Conv1D, MaxPooling1D, Activation
+from keras.layers import Dense, Dropout, Flatten, Conv1D, MaxPooling1D, Activation, BatchNormalization
 from keras.wrappers.scikit_learn import KerasClassifier
 from keras.models import Sequential
 from keras.regularizers import l2
@@ -15,9 +15,9 @@ x_train, x_valid, x_test = x_train[:, :, np.newaxis], x_valid[:, :, np.newaxis],
 # 输入的是2维的
 input_shape = x_train.shape[1:]
 
+
 def baseline_model():
     model = Sequential()
-    # model.add(Conv1D(32, 8, input_shape=(2048, 1)))
     model.add(Conv1D(filters=32, kernel_size=20, strides=8, padding='same', kernel_regularizer=l2(1e-4), input_shape=input_shape))
     model.add(Activation('relu'))
     model.add(MaxPooling1D(4))
@@ -28,7 +28,8 @@ def baseline_model():
     return model
 
 model = baseline_model()
-model.fit(x=x_train, y=y_train, batch_size=128, epochs=50, validation_data=(x_valid, y_valid))
+model.fit(x=x_train, y=y_train, batch_size=128, epochs=20, validation_data=(x_valid, y_valid))
+# 输出损失和精度
 score = model.evaluate(x=x_test, y=y_test)
 print(score[0])
 print(score[1])

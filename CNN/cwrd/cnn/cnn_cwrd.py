@@ -72,7 +72,7 @@ model.fit(x=x_train, y=y_train, batch_size=batch_size, epochs=epochs,
           verbose=1, validation_data=(x_valid, y_valid), shuffle=True,
           callbacks=[tb_cb])
 
-# 评估模型
+# 评估模型, 输出是损失和精确度
 score = model.evaluate(x=x_test, y=y_test, verbose=0)
 print("测试集上的损失率：", score[0])
 print("测试集上的准确率：", score[1])
