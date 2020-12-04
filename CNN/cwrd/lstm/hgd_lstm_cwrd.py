@@ -23,7 +23,7 @@ input_shape = x_train.shape[1:]
 def lstm_classification():
     model = Sequential()
     # 在lstm之前加上一层卷积来提取特征，注意要最大池化，才可以提升准确率
-    model.add(Conv1D(filters=32, kernel_size=20, strides=8, padding='same', kernel_regularizer=l2(1e-4), input_shape=input_shape))
+    model.add(Conv1D(filters=16, kernel_size=64, strides=8, padding='same', kernel_regularizer=l2(1e-4), input_shape=input_shape))
     model.add(MaxPooling1D(4))
     # units 门结构使用的隐藏单元个数
     model.add(LSTM(units=32, activation='tanh', recurrent_activation='hard_sigmoid', kernel_initializer='glorot_uniform',
@@ -38,7 +38,7 @@ def lstm_classification():
 
 model = lstm_classification()
 # 执行训练过程
-model.fit(x=x_train, y=y_train, batch_size=128, epochs=1, verbose=1, validation_data=(x_valid, y_valid), shuffle=True)
+model.fit(x=x_train, y=y_train, batch_size=128, epochs=50, verbose=1, validation_data=(x_valid, y_valid), shuffle=True)
 score = model.evaluate(x=x_test, y=y_test, verbose=0)
 print("测试集上的损失率:", score[0])
 print("测试集上的准确率:", score[1])
