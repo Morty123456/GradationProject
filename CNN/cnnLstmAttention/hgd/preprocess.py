@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 
 
-def prepro(path):
+def prepro(path, rate):
     # 把数据按列进行归一化，全部缩放到 0,1 之间
     def NormalizeMult(data):
         # 把读到的数据变为数组，大小为 43800*7
@@ -46,4 +46,11 @@ def prepro(path):
     pollution_data = data[:, 0].reshape(len(data), 1)
     train_X, _ = create_dataset(data, 20)
     _, train_Y = create_dataset(pollution_data, 20)
-    return train_X, train_Y
+    length = len(train_X)
+    train_len = int(length*rate[0])
+    valid_len = int(length*rate[1])
+    train_x, train_y = train_X[0: train_len], train_Y[0: train_len]
+    valid_x, valid_y = train_X[train_len: train_len+valid_len], train_Y[train_len: train_len+valid_len]
+    test_x, test_y = train_X[train_len+valid_len:], train_Y[train_len+valid_len]
+    print(len(train_X), len(train_x), len(valid_x), len(test_x))
+    return train_x, train_y, valid_x, valid_y, test_x, test_y
