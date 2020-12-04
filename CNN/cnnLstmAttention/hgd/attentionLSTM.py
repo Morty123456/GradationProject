@@ -65,7 +65,15 @@ print(train_x.shape, train_y.shape)
 model = attention_model()
 model.compile(optimizer='adam', loss='mse')
 model.fit(train_x, train_y, epochs=5, batch_size=64, validation_data=[valid_x, valid_y])
-score = model.evaluate(test_x, test_y)
-print(score[0])
-print(score[1])
+# evaluate输入数据和标签，输出损失和精度（只能分类，不能预测）
+# score = model.evaluate(test_x, test_y)
+# print(score[0])
+# print(score[1])
+# predict输入测试数据，输出预测结果
+predict = model.predict(test_x)
+loss = 0
+for i in range(len(predict)):
+    loss = loss + (predict[i]-test_y[i])*(predict[i]-test_y[i])
+print(loss)
+# print(len(predict), len(test_y))
 plot_model(model=model, to_file='attentionLSTM.png', show_shapes=True)

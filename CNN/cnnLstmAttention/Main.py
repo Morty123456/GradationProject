@@ -5,6 +5,8 @@ from keras.layers import merge
 from keras.layers.core import *
 from keras.layers.recurrent import LSTM
 from keras.models import *
+import keras.backend as K
+
 
 import pandas as pd
 import numpy as np
@@ -145,6 +147,6 @@ print(train_X.shape, train_Y.shape)
 m = attention_model()
 m.summary()
 m.compile(optimizer='adam', loss='mse')
-m.fit([train_X], train_Y, epochs=10, batch_size=64, validation_split=0.1)
+m.fit(train_X, train_Y, epochs=10, batch_size=64, validation_split=0.1)
 # m.save("./model.h5")
 # np.save("normalize.npy",normalize)

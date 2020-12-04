@@ -51,6 +51,7 @@ def prepro(path, rate):
     valid_len = int(length*rate[1])
     train_x, train_y = train_X[0: train_len], train_Y[0: train_len]
     valid_x, valid_y = train_X[train_len: train_len+valid_len], train_Y[train_len: train_len+valid_len]
-    test_x, test_y = train_X[train_len+valid_len:], train_Y[train_len+valid_len]
-    print(len(train_X), len(train_x), len(valid_x), len(test_x))
+    test_x, test_y = train_X[train_len+valid_len:], train_Y[train_len+valid_len:]
+    # print(len(train_X), len(train_x), len(valid_x), len(test_x))
+    # print(len(train_Y), len(train_y), len(valid_y), len(test_y))
     return train_x, train_y, valid_x, valid_y, test_x, test_y
