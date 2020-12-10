@@ -11,31 +11,31 @@ import keras.backend as K
 # 加入注意力机制
 # 将输入来一个全连接，然后使用softmax函数来计算概率
 def attention_3d_block(inputs, single_attention_vector=False):
-    print(inputs)
+    # print(inputs)
     # 返回输入的元组，以列表的形式存储
     time_steps = K.int_shape(inputs)[1]
-    print(time_steps)
+    # print(time_steps)
     # 输入是 [训练批量 时间长度 输入维度]
     input_dim = K.int_shape(inputs)[2]
-    print(input_dim)
+    # print(input_dim)
     # Permute层, 对样本模式进行重排
     # (2, 1) 代表将输入的第二个维度重排到输出的第一个维度，输入的第一个维度重排到输出的第二个维度
-    print(inputs)
+    # print(inputs)
     a = Permute((2, 1))(inputs)
-    print(a)
+    # print(a)
     # Dense全连接层
     a = Dense(time_steps, activation='softmax')(a)
-    print(a)
+    # print(a)
     if single_attention_vector:
         a = Lambda(lambda x: K.mean(x, axis=1))(a)
         a = RepeatVector(input_dim)(a)
     a_probs = Permute((2, 1))(a)
-    print(a_probs)
+    # print(a_probs)
     # Multiply 计算输入张量列表的乘积。
     # 输入：张量列表，张量具有相同的尺寸
     # 输出：一个张量，尺寸和输入的相同
     output_attention_mul = Multiply()([inputs, a_probs])
-    print(output_attention_mul)
+    # print(output_attention_mul)
     return output_attention_mul
 
 
