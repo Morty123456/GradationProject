@@ -42,4 +42,4 @@ model.fit(x=x_train, y=y_train, batch_size=128, epochs=20, verbose=1, validation
 score = model.evaluate(x=x_test, y=y_test, verbose=0)
 print("测试集上的损失率:", score[0])
 print("测试集上的准确率:", score[1])
-plot_model(model=model, to_file='lstm-diagnosis.png', show_shapes=True)
+# plot_model(model=model, to_file='lstm-diagnosis.png', show_shapes=True)
