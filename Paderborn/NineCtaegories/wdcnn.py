@@ -10,7 +10,7 @@ from keras.utils import plot_model
 # 训练参数
 # 训练保持在100轮; 每组数据最好包括一个周期,大概1800个数据
 batch_size = 64  # 一次训练选取的样本数
-epochs = 40       # 训练轮数
+epochs = 100       # 训练轮数
 num_classes = 9   # 数据类别
 length = 1800    # 每组数据长度 1800效果比较好
 number = 1000     # 每类样本的数量

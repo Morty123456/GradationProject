@@ -9,7 +9,7 @@ from keras.utils import plot_model
 
 # 训练参数
 batch_size = 64
-epochs = 100
+epochs = 1
 num_classes = 9
 length = 1800
 number = 1000
@@ -19,6 +19,8 @@ path = r'D:\Data\Paderborn\data'
 x_train, y_train, x_valid, y_valid, x_test, y_test = preprocess.preprocess(
     d_path=path, length=length, number=number, rate=rate
 )
+print(len(x_train), len(x_train[0]))
+print(x_train[0:2])
 # np.newaxis 增加一个维度，把二维数据转为三维
 x_train, x_valid, x_test = x_train[:, :, np.newaxis], x_valid[:, :, np.newaxis], x_test[:, :, np.newaxis]
 # 输入的数据是2维的
